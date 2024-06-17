@@ -4,6 +4,8 @@ const mongoose=require("mongoose");
 const cookieParser=require("cookie-parser");
 const cors = require('cors')
 
+const PORT=process.env.PORT || 8000
+
 
 
 
@@ -59,4 +61,4 @@ app.use("/api/payment",paymentRouter);
 app.use(handleError);
 
 
-app.listen(process.env.PORT,()=>console.log(`Server started at ${process.env.PORT}`));
+app.listen(PORT,()=>console.log(`Server started at ${process.env.PORT}`));
