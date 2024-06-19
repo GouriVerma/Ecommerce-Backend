@@ -79,6 +79,15 @@ const orderSchema=new Schema({
                 default:"Order Placed",
                 enum:["Order Placed","Shipped","Arrived"]
             },
+
+            shippedAt:{
+                type:Date
+            },
+            
+        
+            deliveredAt:{
+                type:Date
+            },
         }
     ],
     user:{
@@ -128,11 +137,8 @@ const orderSchema=new Schema({
 
 
     },
-    
 
-    deliveredAt:{
-        type:Date
-    },
+    
 
 
 

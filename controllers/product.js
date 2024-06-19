@@ -81,22 +81,33 @@ const handleCreateUpdateReview=handleAsyncError(async (req, res, next) => {
 
     const {rating,description}=req.body;
 
-    const isReviewed=product.reviews.find((rev)=>rev.createdBy.toString() === req.user._id);
+    const isReviewed=product.reviews.find((rev)=>rev.createdBy.toString() == req.user._id);
 
     if(isReviewed){
         product.reviews.forEach((rev)=>{
             if(rev.createdBy.toString() === req.user._id){
                 rev.rating=Number(rating);
-                rev.description=description;
+                if(description){
+                    rev.description=description;
+                }
+                
                 rev.createdByName=req.user?.userName;
                 rev.createdBy=req.user?._id
             }
         })
     }
     else{
-        product.reviews.push({rating:Number(rating),description,createdByName:req.user?.userName,
-            createdBy:req.user?._id});
-        product.numOfReviews=product.reviews.length;
+        if(!description){
+            product.reviews.push({rating:Number(rating),createdByName:req.user?.userName,
+                createdBy:req.user?._id});
+            product.numOfReviews=product.reviews.length;
+        }
+        else{
+            product.reviews.push({rating:Number(rating),description,createdByName:req.user?.userName,
+                createdBy:req.user?._id});
+            product.numOfReviews=product.reviews.length;
+        }
+        
     }
 
     let avg=0;
