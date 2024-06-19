@@ -16,7 +16,7 @@ const orderSchema=new Schema({
             required:[true,"Please Enter city"]
         },
         pinCode:{
-            type:Number,
+            type:String,
             required:[true,"Please Enter pincode"]
         },
         state:{
@@ -61,7 +61,7 @@ const orderSchema=new Schema({
             },
             smallDesc:{
                 type:String,
-                required:true
+                
             },
             size:{
                 type:String,

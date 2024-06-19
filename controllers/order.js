@@ -4,7 +4,7 @@ const handleAsyncError = require("../utils/asyncError");
 const ErrorHandler=require("../utils/error");
 
 
-const handlePlaceOrder=handleAsyncError(async(req,res,next)=>{
+const handlePlaceOrder=(async(req,res,next)=>{
     if(!req.user){
         return next(new ErrorHandler("You are not authenticated", 401));
 
