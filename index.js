@@ -61,4 +61,4 @@ app.use("/api/payment",paymentRouter);
 app.use(handleError);
 
 
-app.listen(PORT,()=>console.log(`Server started at ${process.env.PORT}`));
+app.listen(PORT,()=>console.log(`Server started at ${PORT}`));

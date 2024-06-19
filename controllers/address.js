@@ -130,7 +130,7 @@ const handleUpdateAddress=handleAsyncError(async(req,res,next)=>{
     })
 
     
-    user.save({validateBeforeSave:true});
+    user.save({validateBeforeSave:false});
     return res.status(200).json({success:true,savedAddresses:user.savedAddresses});
 
 })

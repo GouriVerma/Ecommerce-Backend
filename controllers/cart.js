@@ -28,6 +28,7 @@ const handleAddToCart=handleAsyncError(async(req,res,next)=>{
         return next(new ErrorHandler("You are not logged in",401));
     }
     const {name,newPrice,oldPrice,discount,quantity,size,product,image,brand,avgRating}=req.body;
+   
     
 
     if(req.user._id.toString()!==req.params.id.toString()){

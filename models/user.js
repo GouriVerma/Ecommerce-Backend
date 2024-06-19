@@ -213,7 +213,7 @@ userSchema.static("matchPasswordAndGenerateToken",async function (email,password
 
     
     
-    const result= {_id:user._id,userName:user.userName,email,password,accessToken,refreshToken,cartItemsCount:user.cartItems.length};
+    const result= {_id:user._id,userName:user.userName,email,password,accessToken,refreshToken,cartItemsCount:user.cartItems.length,profileUrl:user.profileUrl.url};
     return result;
 
 });

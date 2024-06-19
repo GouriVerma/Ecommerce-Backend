@@ -9,6 +9,7 @@ const productSchema=new Schema({
     },
     smallDesc:{
         type:String,
+        required:[true,"Please enter product small description"]
 
     },
     desc:{
