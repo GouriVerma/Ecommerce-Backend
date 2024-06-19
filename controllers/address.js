@@ -91,7 +91,7 @@ const handleUpdateAddress=handleAsyncError(async(req,res,next)=>{
     console.log(req.params.id.toString());
 
     if(req.user._id.toString()!==req.params.id.toString()){
-        return next(new ErrorHandler("You can add item to your cart only",403));
+        return next(new ErrorHandler("You can edit your address only",403));
     }
 
     const id=req.user?._id;

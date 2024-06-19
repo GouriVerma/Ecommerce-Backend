@@ -153,7 +153,7 @@ const userSchema=Schema({
                 required:[true,"Please enter area address in address"],   
             },
             pinCode:{
-                type:Number,
+                type:String,
                 required:[true,"Please enter pincode in address"],   
             },
             city:{
