@@ -3,6 +3,8 @@ const dotenv=require("dotenv");
 const mongoose=require("mongoose");
 const cookieParser=require("cookie-parser");
 const cors = require('cors')
+const cloudinary = require('cloudinary').v2;
+
 
 const PORT=process.env.PORT || 8000
 
@@ -32,6 +34,15 @@ const paymentRouter=require("./routes/payment");
 const handleError=require("./middleware/error");
 const { checkAuth } = require("./middleware/auth");
 
+//cloudinary config
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+});
+  
+
 
 const app=express();
 
@@ -42,9 +53,11 @@ mongoose.connect(process.env.MONGO_URL)
 
 //middleware
 app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 app.use(checkAuth);
 app.use(cookieParser());
 app.use(cors());
+
 
 
 

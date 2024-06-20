@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const ErrorHandler = require("../utils/error");
 const handleAsyncError = require("../utils/asyncError");
 const ApiFeatures = require("../utils/apiFeature");
+const {uploadFile}=require("../utils/uploadFile");
 
 
 
@@ -80,6 +81,7 @@ const handleCreateUpdateReview=handleAsyncError(async (req, res, next) => {
     }
 
     const {rating,description}=req.body;
+   
 
     const isReviewed=product.reviews.find((rev)=>rev.createdBy.toString() == req.user._id);
 
@@ -123,6 +125,56 @@ const handleCreateUpdateReview=handleAsyncError(async (req, res, next) => {
     
 
 })
+
+const uploadReviewImages=handleAsyncError(async(req,res,next)=>{
+
+    if(!req.user){
+        return next(new ErrorHandler("You are not authenticated", 401));
+    }
+
+    const productId=req.query?.productId;
+
+    const product=await Product.findById(productId);
+
+    if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+    }
+    
+
+   
+    let ans=[];
+    console.log(product.reviews);
+
+
+    
+    const uploadPromises = req.files.map(async (file) => {
+        const upload = await uploadFile(file.path);
+        ans.push({public_id:upload.public_id,url:upload.secure_url}); // Push the result into the ans array
+    });
+
+    // Wait for all uploads to complete
+    await Promise.all(uploadPromises);
+    console.log(ans);
+
+    const isReviewed=product.reviews.find((rev)=>rev.createdBy.toString() == req.user._id);
+
+    if(isReviewed){
+        product.reviews.forEach((rev)=>{
+            if(rev.createdBy.toString() === req.user._id){
+                rev.imagesUrl=ans;
+            }
+        })
+    }
+
+    else{
+        return next(new ErrorHandler("No review by this user",403));
+    }
+
+    product.save({validateBeforeSave:false});
+
+    return res.status(200).json(product.reviews);
+    
+});
 
 const handleGetAllReviews=handleAsyncError(async(req,res,next)=>{
 
@@ -216,4 +268,4 @@ const handleGetReview=handleAsyncError(async(req,res,next)=>{
     
 })
 
-module.exports = { handleGetAllProducts, handleCreateProduct, handleUpdateProduct, handleGetProduct, handleDeleteProduct, handleCreateUpdateReview,handleGetAllReviews, handleDeleteReview,handleGetReview }
+module.exports = { handleGetAllProducts, handleCreateProduct, handleUpdateProduct, handleGetProduct, handleDeleteProduct, handleCreateUpdateReview,handleGetAllReviews, handleDeleteReview,handleGetReview, uploadReviewImages}
