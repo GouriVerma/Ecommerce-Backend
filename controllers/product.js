@@ -149,7 +149,7 @@ const uploadReviewImages=handleAsyncError(async(req,res,next)=>{
     
     const uploadPromises = req.files.map(async (file) => {
         const upload = await uploadFile(file.path);
-        ans.push({public_id:upload.public_id,url:upload.secure_url}); // Push the result into the ans array
+        ans.push({public_id:upload.public_id,url:upload.url}); // Push the result into the ans array
     });
 
     // Wait for all uploads to complete
