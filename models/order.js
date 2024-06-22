@@ -77,7 +77,7 @@ const orderSchema=new Schema({
                 type:String,
                 required:true,
                 default:"Order Placed",
-                enum:["Order Placed","Shipped","Arrived"]
+                enum:["Order Placed","Shipped","Delivered"]
             },
 
             shippedAt:{

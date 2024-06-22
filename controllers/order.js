@@ -98,7 +98,7 @@ const updateOrderStatus=handleAsyncError(async (req,res,next)=>{
         return next(new ErrorHandler("Order Product not found", 404));
     }
 
-    if(orderProduct.orderStatus==="Arrived"){
+    if(orderProduct.orderStatus==="Delivered"){
         return next(new ErrorHandler("Product is already delivered",400));
     }
 
@@ -110,7 +110,7 @@ const updateOrderStatus=handleAsyncError(async (req,res,next)=>{
       //  await updateStock(orderProduct.product,orderProduct.quantity);
         
     }
-    else if(req.body?.status=="Arrived"){
+    else if(req.body?.status=="Delivered"){
         orderProduct.orderStatus=req.body?.status;
         orderProduct.deliveredAt=new Date();
     }
