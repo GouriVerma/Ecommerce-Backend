@@ -1,10 +1,14 @@
 const {Router}=require("express");
-const {handleGetUser,handleUpdateUser,handleDeleteUser,handleGetAllUsers,handleGetUserByAdmin,handleDeleteUserByAdmin,handleUpdateUserRoleByAdmin}=require("../controllers/user");
+const multer=require("multer");
+const {uploadProfileImage,handleGetUser,handleUpdateUser,handleDeleteUser,handleGetAllUsers,handleGetUserByAdmin,handleDeleteUserByAdmin,handleUpdateUserRoleByAdmin}=require("../controllers/user");
 const {restrictTo}=require("../middleware/auth");
 const { handleAddToCart, handleDeleteFromCart, handleUpdateItemInCart, handleGetAllCartItems,handleDeleteCartItems } = require("../controllers/cart");
 const {handleGetMyAllAddresses,handleAddNewAddress,handleUpdateAddress,handleDeleteAddress}=require("../controllers/address")
 
 const router=Router();
+
+const storage=multer.diskStorage({});
+const upload=multer({storage:storage,limits:{fileSize:500000}});
 
 router.get("/admin",restrictTo(["ADMIN"]),handleGetAllUsers); //only to admin
 router.route("/admin/:id")
@@ -28,6 +32,8 @@ router.route("/address/:id")
 .post(handleAddNewAddress)
 .delete(handleDeleteAddress)
 .put(handleUpdateAddress);
+
+router.post("/profile/upload",upload.single('file'),uploadProfileImage);
 
 router.route("/:id")
 .get(handleGetUser)

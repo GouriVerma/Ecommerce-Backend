@@ -36,8 +36,8 @@ const userSchema=Schema({
         
         public_id:{
         type:String,
-        default:"1987491240174901",
-        required:true
+        
+        
         },
         url:{
             type:String,

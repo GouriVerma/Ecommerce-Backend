@@ -2,9 +2,9 @@ const {Router}=require("express");
 const {restrictTo}=require("../middleware/auth");
 const multer=require("multer");
 
-const {uploadFile}=require("../utils/uploadFile");
 
-const {handleGetAllProducts, handleCreateProduct,handleUpdateProduct,handleGetProduct,handleDeleteProduct, handleCreateUpdateReview, handleGetAllReviews, handleDeleteReview, handleGetReview, uploadReviewImages}=require("../controllers/product");
+
+const {handleGetAllProducts, handleCreateProduct,handleUpdateProduct,handleGetProduct,handleDeleteProduct, handleCreateUpdateReview, handleGetAllReviews, handleDeleteReview, handleGetReview, uploadReviewImages, uploadProductImage}=require("../controllers/product");
 
 const router=Router();
 
@@ -44,6 +44,8 @@ router.route("/review")
 //     return res.json("Successful");
 // })
 router.post("/review/upload",upload.array('files'),uploadReviewImages);
+
+router.post("/upload/:id",restrictTo(["ADMIN"]),upload.array('files'),uploadProductImage);
 
 router.get("/:id",handleGetProduct);
 

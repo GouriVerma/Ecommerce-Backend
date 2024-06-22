@@ -9,17 +9,62 @@ const {uploadFile}=require("../utils/uploadFile");
 const handleGetAllProducts = handleAsyncError(async (req, res, next) => {
     // console.log("entered");
     const productCount=Product.countDocuments();
-    const apiFeature = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10);
+    // const {requiredCount}=req.body || 20;
+    // console.log(parseInt(req.query.requiredCount));
+    const apiFeature = new ApiFeatures(Product.find(), req.query).search().filter().pagination(parseInt(req.query.requiredCount));
     const products = await apiFeature.query;
     // console.log(products);
     // const products=await Product.find({});
     return res.status(200).json(products);
 });
 
+const uploadProductImage=handleAsyncError(async(req,res,next)=>{
+    
+    if(!req.user){
+        return next(new ErrorHandler("You are not authenticated", 401));
+    }
+
+    const _id = req.params.id;
+    const product = await Product.findById(_id);
+    if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+    }
+
+    let ans=[];
+    
+    
+
+
+    
+    const uploadPromises = req.files.map(async (file) => {
+        const upload = await uploadFile(file.path);
+        ans.push({public_id:upload.public_id,url:upload.url}); // Push the result into the ans array
+    });
+
+    // Wait for all uploads to complete
+    await Promise.all(uploadPromises);
+    console.log(ans);
+
+    product.images.push(...ans);
+    product.save({validateBeforeSave:false})
+
+    
+    
+    
+
+    return res.status(200).json(product.images);
+    
+});
+
 const handleCreateProduct = handleAsyncError(async (req, res, next) => {
 
-    const { name, smallDesc, desc, images, newPrice, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, gender,brand } = req.body;
+    let { name, smallDesc, desc, images, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, gender,brand } = req.body;
+    if(!discount){
+        discount=0;
+    }
+    const newPrice=oldPrice+Math.floor(Number((oldPrice*discount)/100));
     const createdBy=req.user._id;
+    console.log({ name, smallDesc, desc, images, newPrice, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, createdBy, gender,brand });
     const product = await Product.create({ name, smallDesc, desc, images, newPrice, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, createdBy, gender,brand });
     return res.status(200).json({ success: true, product });
 });
@@ -268,4 +313,4 @@ const handleGetReview=handleAsyncError(async(req,res,next)=>{
     
 })
 
-module.exports = { handleGetAllProducts, handleCreateProduct, handleUpdateProduct, handleGetProduct, handleDeleteProduct, handleCreateUpdateReview,handleGetAllReviews, handleDeleteReview,handleGetReview, uploadReviewImages}
+module.exports = { uploadProductImage, handleGetAllProducts, handleCreateProduct, handleUpdateProduct, handleGetProduct, handleDeleteProduct, handleCreateUpdateReview,handleGetAllReviews, handleDeleteReview,handleGetReview, uploadReviewImages}

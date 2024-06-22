@@ -8,10 +8,10 @@ class ApiFeatures{
     search(){
         const keyword=this.queryStr.keyword?
         {
-            name:{
-                $regex:this.queryStr.keyword,
-                $options:"i",
-            }
+            $or: [
+                { name: { $regex: this.queryStr.keyword, $options: "i" } },
+                { brand: { $regex: this.queryStr.keyword, $options: "i" } }
+            ]
         }:{};
 
         
@@ -23,7 +23,7 @@ class ApiFeatures{
         const queryCopy={...this.queryStr};
 
         //remove some not required keywords
-        const fieldsToBeRemoved=["keyword","page","limit"];
+        const fieldsToBeRemoved=["keyword","page","limit","requiredCount"];
         fieldsToBeRemoved.forEach(key=>delete queryCopy[key]);
         
         //filtering for price

@@ -61,6 +61,7 @@ const handleLogout=handleAsyncError((req,res,next)=>{
 })
 
 const handleForgotPassword=handleAsyncError(async (req,res,next)=>{
+    
     const {email}=req.body;
     if(!email){
         return next(new ErrorHandler("Please enter email",400));
@@ -75,11 +76,11 @@ const handleForgotPassword=handleAsyncError(async (req,res,next)=>{
 
     await user.save({validateBeforeSave:true}); //save because resetToken is generated in method but it is not yet saved
 
-    const url=`${req.protocol}://${req.get("host")}/api/auth/password/reset/${resetToken}`
+    const url=`${[process.env.DEPLOYED_URL]}/forgot-password/${resetToken}`
 
     const options={
         email:user.email,
-        message: `Please click on ${url} to reset password \n\n Ignore mail if not requested` ,
+        message: `Hello from ShopGlam \n\n Please click on ${url} to reset your password. This link will be valid till 15 minutes. \n\n Ignore mail if not requested` ,
         subject:`Email Recovery Ecommerce`
     }
 
@@ -124,7 +125,7 @@ const handleResetPassword=handleAsyncError(async (req,res,next)=>{
     const accessToken=createAccessToken(user);
     const refreshToken=createRefreshToken(user);  
     const result= {_id:user._id,userName:user.userName,email:user.email,password,accessToken,refreshToken};
-    return res.status(200).cookie("token",accessToken,{expire:new Date()+process.env.COOKIE_EXPIRE*24*60*60*1000,httpOnly:true}).json(result);
+    return res.status(200).json(result);
 
 
     

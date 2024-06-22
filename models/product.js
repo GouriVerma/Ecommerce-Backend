@@ -39,6 +39,7 @@ const productSchema=new Schema({
     },
     discount:{
         type:Number,
+        default:0
         
     },
     

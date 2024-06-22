@@ -1,6 +1,32 @@
 const User=require("../models/user");
 const handleAsyncError=require("../utils/asyncError");
 const ErrorHandler = require("../utils/error");
+const {uploadFile} =require("../utils/uploadFile");
+
+
+const uploadProfileImage=handleAsyncError(async(req,res,next)=>{
+    
+    if(!req.user){
+        return next(new ErrorHandler("You are not authenticated", 401));
+    }
+
+    
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+    
+    const file=req.file;
+    const upload = await uploadFile(file.path);
+    user.profileUrl.public_id=upload.public_id;
+    user.profileUrl.url=upload.url;
+    
+    user.save({validateBeforeSave:false});
+
+    return res.status(200).json(user);
+    
+});
+
 
 const handleGetUser=handleAsyncError(async (req, res, next) => {
     const _id = req.params.id;
@@ -115,4 +141,4 @@ const handleDeleteUserByAdmin=handleAsyncError(async (req,res,next)=>{
 
 
 
-module.exports={handleGetUser,handleUpdateUser,handleDeleteUser,handleGetAllUsers,handleGetUserByAdmin,handleUpdateUserRoleByAdmin,handleDeleteUserByAdmin}
+module.exports={uploadProfileImage,handleGetUser,handleUpdateUser,handleDeleteUser,handleGetAllUsers,handleGetUserByAdmin,handleUpdateUserRoleByAdmin,handleDeleteUserByAdmin}
