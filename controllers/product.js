@@ -62,7 +62,7 @@ const handleCreateProduct = handleAsyncError(async (req, res, next) => {
     if(!discount){
         discount=0;
     }
-    const newPrice=oldPrice+Math.floor(Number((oldPrice*discount)/100));
+    const newPrice=oldPrice-Math.floor(Number((oldPrice*discount)/100));
     const createdBy=req.user._id;
     console.log({ name, smallDesc, desc, images, newPrice, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, createdBy, gender,brand });
     const product = await Product.create({ name, smallDesc, desc, images, newPrice, oldPrice, discount, category, color, rating, stock, numOfReviews, reviews, createdBy, gender,brand });
@@ -90,6 +90,19 @@ const handleUpdateProduct = handleAsyncError(async (req, res, next) => {
     const product = await Product.findById(_id);
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
+    }
+
+    console.log(req.body);
+
+    if(req.body?.discount && req.body?.discount>0){
+        console.log(req.body.discount);
+        if(req.body?.oldPrice){
+            req.body.newPrice=req.body.oldPrice-Math.floor(Number((req.body.oldPrice*req.body.discount)/100));
+        }
+        else{
+            req.body.newPrice=product.oldPrice-Math.floor(Number((product.oldPrice*req.body.discount)/100));
+        }
+
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(_id,
